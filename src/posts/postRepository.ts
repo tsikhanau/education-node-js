@@ -1,0 +1,61 @@
+import {InputPostType, PostOutputType} from "../input-output-types/post-types";
+import {PostDBType} from "../db/posts-db-types";
+import {db} from "../db/db";
+
+export const postRepository = {
+    async create(input: InputPostType): Promise<{error?: string, id?: number}> {
+        const newPost: PostDBType = {
+            ...input,
+            id: Date.now() + Math.floor(Math.random() * 100),
+        }
+
+        try {
+            db.posts = [...db.posts, newPost]
+        } catch (e: any) {
+            return {error: e?.message}
+        }
+
+        return {id: newPost.id}
+    },
+    async find(id: number): Promise<PostDBType | undefined> {
+        return db.posts.find(p => p.id === id)
+    },
+    async delete(id: number): Promise<{error?: string}> {
+        const postIndex: number = db.posts.findIndex(v => v.id === id);
+        if(postIndex < 0) {
+            return {error: "not found"}
+        }
+
+        db.posts.splice(postIndex, 1);
+        return {};
+    },
+    async update(id: number, data: InputPostType): Promise<{error?: string}> {
+        const post = await this.find(id);
+        if(!post) {
+            return {error: "not found"}
+        }
+
+        db.posts = db.posts.map(p => {
+            if(p.id === id) {
+                return {
+                    ...p,
+                    data
+                }
+            }
+            return p;
+        });
+        return {};
+    },
+    async findForOutput(id: number): Promise<null | PostOutputType> {
+        const post = await this.find(id)
+        if (!post) { return null }
+        return this.mapToOutput(post)
+
+    },
+    mapToOutput(post: PostDBType): PostOutputType {
+        return {
+            id: post.id,
+            title: post.title,
+        }
+    }
+}

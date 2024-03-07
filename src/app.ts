@@ -1,6 +1,6 @@
 import express from 'express'
 import {SETTINGS} from "./settings";
-import {videosRouter} from "./videos";
+import {postsRouter, videosRouter} from "./videos";
 import {setDB} from "./db/db";
 
 export const app = express()
@@ -11,3 +11,4 @@ app.delete('/testing/all-data', (req, res) => {
     res.status(204).json([])
 })
 app.use(SETTINGS.PATH.VIDEOS, videosRouter);
+app.use(SETTINGS.PATH.POSTS, postsRouter);
