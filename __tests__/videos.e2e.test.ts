@@ -157,6 +157,20 @@ describe('/posts', () => {
 
         expect(res.body.blogId).toEqual(newPost.blogId)
     })
+        it('shouldn\'t create', async () => {
+        setDB()
+        const newPost = {
+            title: null,
+            shortDescription: '',
+            content: 'c1',
+            blogId: 'blogId'
+        }
+
+        const res = await req
+            .post(SETTINGS.PATH.POSTS)
+            .send(newPost)
+            .expect(400)
+        })
     it('shouldn\'t find', async () => {
         setDB(dataset1)
 
@@ -194,14 +208,14 @@ describe('/posts', () => {
 
         const id = dataset1.posts[0].id;
 
-        const updatedVideo = {
+        const updatedPost = {
             ...dataset1.posts[0],
             title: 't1',
         }
 
         const res = await req
             .put(SETTINGS.PATH.POSTS + '/' + id)
-            .send(updatedVideo)
+            .send(updatedPost)
             .expect(204)
     })
     it('shouldn\'t update because of incorrect payload', async () => {
@@ -209,7 +223,7 @@ describe('/posts', () => {
 
         const id = dataset1.posts[0].id;
 
-        const updatedVideo = {
+        const updatedPost = {
             title: 't1',
             content: 'c1',
             shortDescription: 'd1',
@@ -218,13 +232,13 @@ describe('/posts', () => {
 
         const res = await req
             .put(SETTINGS.PATH.POSTS + '/' + id)
-            .send(updatedVideo)
+            .send(updatedPost)
             .expect(400)
     })
     it('shouldn\'t update because of incorrect id', async () => {
         setDB(dataset1);
 
-        const updatedVideo = {
+        const updatedPost = {
             title: 't1',
             content: 'c1',
             shortDescription: 'd1',
@@ -233,7 +247,7 @@ describe('/posts', () => {
 
         const res = await req
             .put(SETTINGS.PATH.POSTS + '/1')
-            .send(updatedVideo)
+            .send(updatedPost)
             .expect(404)
     })
 })

@@ -1,11 +1,14 @@
 import {DBType} from '../src/db/db'
 import {Resolutions} from "../src/input-output-types/video-types";
 import moment from "moment";
+import {PostDBType} from "../src/db/posts-db-types";
+import {VideoDBType} from "../src/db/video-db-types";
+import {BlogDBType} from "../src/db/blogs-db-types";
 
 const createdAt = moment();
 const publicationDate = createdAt.clone().add(1, 'days');
 
-export const video1: any /*VideoDBType*/ = {
+export const video1: VideoDBType = {
     id: Date.now() + Math.floor(Math.random() * 100),
     title: 't' + Date.now() + Math.floor(Math.random() * 100),
     author: 'a' + Date.now() + Math.floor(Math.random() * 100),
@@ -16,9 +19,16 @@ export const video1: any /*VideoDBType*/ = {
     availableResolutions: [Resolutions.P240],
 }
 
-export const post1: any /*VideoDBType*/ = {
+export const blog1: BlogDBType = {
+    id: Date.now() + Math.floor(Math.random() * 100),
+    name: 't' + Date.now() + Math.floor(Math.random() * 100),
+    description: 'd' + Date.now() + Math.floor(Math.random() * 100),
+    websiteUrl: 'url'
+}
+
+export const post1: PostDBType = {
     content: "content",
-    blogId: 'b' + Date.now() + Math.floor(Math.random() * 100),
+    blogId: blog1.id,
     blogName: "blogName",
     id: Date.now() + Math.floor(Math.random() * 100),
     title: 't' + Date.now() + Math.floor(Math.random() * 100),
@@ -29,6 +39,7 @@ export const post1: any /*VideoDBType*/ = {
 export const dataset1: DBType = {
     videos: [video1],
     posts: [post1],
+    blogs: [blog1]
 }
 
 // ...
