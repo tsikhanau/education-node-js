@@ -9,7 +9,7 @@ import {authMiddleware, inputCheckErrorsMiddleware} from "../posts/middlewares";
 export const blogsRouter = Router()
 
 blogsRouter.get('/', getBlogsController)
-blogsRouter.post('/', ...blogInputValidator, inputCheckErrorsMiddleware, createBlogController)
+blogsRouter.post('/', authMiddleware, ...blogInputValidator, inputCheckErrorsMiddleware, createBlogController)
 blogsRouter.get('/:id', findBlogController)
-blogsRouter.delete('/:id', deleteBlogController)
-blogsRouter.put('/:id', ...blogInputValidator, inputCheckErrorsMiddleware, updateBlogController)
+blogsRouter.delete('/:id', authMiddleware, deleteBlogController)
+blogsRouter.put('/:id', authMiddleware, ...blogInputValidator, inputCheckErrorsMiddleware, updateBlogController)

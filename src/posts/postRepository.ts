@@ -12,11 +12,7 @@ export const postRepository = {
             id: Date.now() + Math.floor(Math.random() * 100) + '',
         }
 
-        try {
-            db.posts = [...db.posts, newPost]
-        } catch (e: any) {
-            return {error: e?.message}
-        }
+        db.posts = [...db.posts, newPost]
 
         return {id: newPost.id}
     },
@@ -48,11 +44,6 @@ export const postRepository = {
             return p;
         });
         return {};
-    },
-    async findForOutput(id: string): Promise<null | PostOutputType> {
-        const post = await this.find(id)
-        if (!post) { return null }
-        return this.mapToOutput(post)
     },
     mapToOutput(post: PostDBType): PostOutputType {
         return {

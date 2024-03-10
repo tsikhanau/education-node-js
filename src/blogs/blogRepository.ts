@@ -46,16 +46,4 @@ export const blogRepository = {
         });
         return {};
     },
-    // async findForOutput(id: number): Promise<null | BlogOut> {
-    //     const post = await this.find(id)
-    //     if (!post) { return null }
-    //     return this.mapToOutput(post)
-    //
-    // },
-    // mapToOutput(post: PostDBType): PostOutputType {
-    //     return {
-    //         id: post.id,
-    //         title: post.title,
-    //     }
-    // }
 }

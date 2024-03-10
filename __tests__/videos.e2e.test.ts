@@ -1,9 +1,11 @@
 import {req} from './test-helpers';
 import {SETTINGS} from '../src/settings';
 import {setDB} from "../src/db/db";
-import {dataset1} from "./datasets";
+import {blog1, dataset1, post1} from "./datasets";
 import {Resolutions} from "../src/input-output-types/video-types";
 
+const buff2 = Buffer.from(SETTINGS.ADMIN_AUTH, 'utf8')
+const codedAuth = buff2.toString('base64');
 describe('/videos', () => {
     beforeAll(async () => {
         await req.delete('/testing/all-data')
@@ -142,22 +144,23 @@ describe('/posts', () => {
         expect(res.body[0]).toEqual(dataset1.posts[0]);
     })
     it('should create', async () => {
-        setDB()
+        setDB({blogs: [blog1]})
         const newPost = {
             title: 't1',
             shortDescription: 'd1',
             content: 'c1',
-            blogId: 'blogId'
+            blogId: blog1.id,
         }
 
         const res = await req
             .post(SETTINGS.PATH.POSTS)
+            .set({'Authorization': 'Basic ' + codedAuth})
             .send(newPost)
             .expect(201)
 
         expect(res.body.blogId).toEqual(newPost.blogId)
     })
-        it('shouldn\'t create', async () => {
+    it('shouldn\'t create', async () => {
         setDB()
         const newPost = {
             title: null,
@@ -168,6 +171,7 @@ describe('/posts', () => {
 
         const res = await req
             .post(SETTINGS.PATH.POSTS)
+            .set({'Authorization': 'Basic ' + codedAuth})
             .send(newPost)
             .expect(400)
         })
@@ -187,51 +191,39 @@ describe('/posts', () => {
             .get(SETTINGS.PATH.POSTS + '/' + id)
             .expect(200)
     })
-    it('should delete', async () => {
-        setDB(dataset1);
-
-        const id = dataset1.posts[0].id;
-
-        const res = await req
-            .delete(SETTINGS.PATH.POSTS + '/' + id)
-            .expect(204)
-    })
-    it('shouldn\'t delete', async () => {
-        setDB(dataset1);
-
-        const res = await req
-            .delete(SETTINGS.PATH.POSTS + '/1')
-            .expect(404)
-    })
     it('should update', async () => {
         setDB(dataset1);
 
-        const id = dataset1.posts[0].id;
+        const {id, blogName, shortDescription, blogId, content} = post1;
 
         const updatedPost = {
-            ...dataset1.posts[0],
+            shortDescription,
+            blogId,
+            content,
+            blogName,
             title: 't1',
         }
 
         const res = await req
             .put(SETTINGS.PATH.POSTS + '/' + id)
+            .set({'Authorization': 'Basic ' + codedAuth})
             .send(updatedPost)
             .expect(204)
     })
     it('shouldn\'t update because of incorrect payload', async () => {
         setDB(dataset1);
 
-        const id = dataset1.posts[0].id;
+        const id = post1.id;
 
         const updatedPost = {
             title: 't1',
             content: 'c1',
-            shortDescription: 'd1',
-            blogId: 'b1'
+            shortDescription: 'd1'
         }
 
         const res = await req
             .put(SETTINGS.PATH.POSTS + '/' + id)
+            .set({'Authorization': 'Basic ' + codedAuth})
             .send(updatedPost)
             .expect(400)
     })
@@ -242,21 +234,31 @@ describe('/posts', () => {
             title: 't1',
             content: 'c1',
             shortDescription: 'd1',
-            blogId: 'b1'
+            blogId: dataset1.blogs[0].id
         }
 
         const res = await req
             .put(SETTINGS.PATH.POSTS + '/1')
+            .set({'Authorization': 'Basic ' + codedAuth})
             .send(updatedPost)
             .expect(404)
     })
-    it('auth test', async () => {
-        const buff2 = Buffer.from("abcs", 'utf8')
-        const codedAuth = buff2.toString('base64')
-        const res = await req
-            .get(SETTINGS.PATH.POSTS)
-            .set({'Authorisation': 'Basic ' + codedAuth})
-            .expect(200)
+    it('should delete', async () => {
+        setDB(dataset1);
 
+        const id = dataset1.posts[0].id;
+
+        const res = await req
+            .delete(SETTINGS.PATH.POSTS + '/' + id)
+            .set({'Authorization': 'Basic ' + codedAuth})
+            .expect(204)
+    })
+    it('shouldn\'t delete', async () => {
+        setDB(dataset1);
+
+        const res = await req
+            .delete(SETTINGS.PATH.POSTS + '/1')
+            .set({'Authorization': 'Basic ' + codedAuth})
+            .expect(404)
     })
 })

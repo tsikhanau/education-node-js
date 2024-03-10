@@ -9,7 +9,7 @@ import {authMiddleware, inputCheckErrorsMiddleware, postInputValidator} from "..
 export const postsRouter = Router()
 
 postsRouter.get('/', getPostController)
-postsRouter.post('/', ...postInputValidator, inputCheckErrorsMiddleware, createPostController)
+postsRouter.post('/', authMiddleware, ...postInputValidator, inputCheckErrorsMiddleware, createPostController)
 postsRouter.get('/:id', findPostController)
-postsRouter.delete('/:id', deletePostController)
-postsRouter.put('/:id', ...postInputValidator, inputCheckErrorsMiddleware, updatePostController)
+postsRouter.delete('/:id', authMiddleware, deletePostController)
+postsRouter.put('/:id', authMiddleware, ...postInputValidator, inputCheckErrorsMiddleware, updatePostController)

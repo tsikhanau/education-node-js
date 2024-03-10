@@ -27,10 +27,10 @@ export const blog1: BlogDBType = {
 }
 
 export const post1: PostDBType = {
+    id: Date.now() + Math.floor(Math.random() * 100) + "",
     content: "content",
     blogId: blog1.id,
     blogName: "blogName",
-    id: Date.now() + Math.floor(Math.random() * 100) + "",
     title: 't' + Date.now() + Math.floor(Math.random() * 100),
     shortDescription: 'd' + Date.now() + Math.floor(Math.random() * 100),
 }
