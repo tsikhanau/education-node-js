@@ -1,7 +1,7 @@
 import {Resolutions} from "../input-output-types/video-types";
 
 export type VideoDBType = {
-    id: number;
+    id: string;
     title: string;
     author: string;
     canBeDownloaded: boolean;

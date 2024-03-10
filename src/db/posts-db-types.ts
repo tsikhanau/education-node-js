@@ -1,8 +1,8 @@
 export type PostDBType = {
-    id: number;
+    id: string;
     title: string;
     shortDescription: string;
     content: string;
-    blogId: number;
-    blogName?: string;
+    blogId: string;
+    blogName: string;
 }

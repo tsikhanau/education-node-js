@@ -1,7 +1,9 @@
 import express from 'express'
 import {SETTINGS} from "./settings";
-import {blogsRouter, postsRouter, videosRouter} from "./videos";
+import {videosRouter} from "./videos";
 import {setDB} from "./db/db";
+import {postsRouter} from "./posts";
+import {blogsRouter} from "./blogs";
 
 export const app = express()
 app.use(express.json())

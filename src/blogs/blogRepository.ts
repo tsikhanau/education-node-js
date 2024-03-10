@@ -3,10 +3,10 @@ import {InputBlogType} from "../input-output-types/blog-types";
 import {BlogDBType} from "../db/blogs-db-types";
 
 export const blogRepository = {
-    async create(input: InputBlogType): Promise<{error?: string, id?: number}> {
+    async create(input: InputBlogType): Promise<{error?: string, id?: string}> {
         const newBlog: BlogDBType = {
             ...input,
-            id: Date.now() + Math.floor(Math.random() * 100),
+            id: Date.now() + Math.floor(Math.random() * 100) + "",
         }
 
         try {
@@ -17,10 +17,10 @@ export const blogRepository = {
 
         return {id: newBlog.id}
     },
-    async find(id: number): Promise<BlogDBType| undefined> {
+    async find(id: string): Promise<BlogDBType| undefined> {
         return db.blogs.find(p => p.id === id)
     },
-    async delete(id: number): Promise<{error?: string}> {
+    async delete(id: string): Promise<{error?: string}> {
         const blogIndex: number = db.blogs.findIndex(v => v.id === id);
         if(blogIndex < 0) {
             return {error: "not found"}
@@ -29,7 +29,7 @@ export const blogRepository = {
         db.blogs.splice(blogIndex, 1);
         return {};
     },
-    async update(id: number, data: InputBlogType): Promise<{error?: string}> {
+    async update(id: string, data: InputBlogType): Promise<{error?: string}> {
         const blog = await this.find(id);
         if(!blog) {
             return {error: "not found"}
@@ -39,7 +39,7 @@ export const blogRepository = {
             if(p.id === id) {
                 return {
                     ...p,
-                    data
+                    ...data
                 }
             }
             return p;

@@ -9,7 +9,7 @@ const createdAt = moment();
 const publicationDate = createdAt.clone().add(1, 'days');
 
 export const video1: VideoDBType = {
-    id: Date.now() + Math.floor(Math.random() * 100),
+    id: Date.now() + Math.floor(Math.random() * 100) + "",
     title: 't' + Date.now() + Math.floor(Math.random() * 100),
     author: 'a' + Date.now() + Math.floor(Math.random() * 100),
     canBeDownloaded: true,
@@ -20,7 +20,7 @@ export const video1: VideoDBType = {
 }
 
 export const blog1: BlogDBType = {
-    id: Date.now() + Math.floor(Math.random() * 100),
+    id: Date.now() + Math.floor(Math.random() * 100) + "",
     name: 't' + Date.now() + Math.floor(Math.random() * 100),
     description: 'd' + Date.now() + Math.floor(Math.random() * 100),
     websiteUrl: 'url'
@@ -30,7 +30,7 @@ export const post1: PostDBType = {
     content: "content",
     blogId: blog1.id,
     blogName: "blogName",
-    id: Date.now() + Math.floor(Math.random() * 100),
+    id: Date.now() + Math.floor(Math.random() * 100) + "",
     title: 't' + Date.now() + Math.floor(Math.random() * 100),
     shortDescription: 'd' + Date.now() + Math.floor(Math.random() * 100),
 }

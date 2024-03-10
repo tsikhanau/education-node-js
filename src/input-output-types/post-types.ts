@@ -2,10 +2,10 @@ export type InputPostType = {
     title: string;
     shortDescription: string;
     content: string;
-    blogId: number;
+    blogId: string;
 }
 
 export type PostOutputType = {
-    id: number;
+    id: string;
     title: string;
 }

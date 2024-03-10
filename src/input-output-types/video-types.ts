@@ -13,7 +13,7 @@ export type OutputVideoType = {
     title: string;
     author: string;
     availableResolutions: Resolutions[];
-    id: number;
+    id: string;
     canBeDownloaded: boolean;
     minAgeRestriction: number | null;
     createdAt: string;

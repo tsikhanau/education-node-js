@@ -250,4 +250,13 @@ describe('/posts', () => {
             .send(updatedPost)
             .expect(404)
     })
+    it('auth test', async () => {
+        const buff2 = Buffer.from("abcs", 'utf8')
+        const codedAuth = buff2.toString('base64')
+        const res = await req
+            .get(SETTINGS.PATH.POSTS)
+            .set({'Authorisation': 'Basic ' + codedAuth})
+            .expect(200)
+
+    })
 })

@@ -4,7 +4,7 @@ import {Request, Response} from 'express';
 import {PostDBType} from "../db/posts-db-types";
 
 export const updatePostController = async (req: Request<any, any, InputPostType,{id: string}>, res: Response<PostDBType | {}>) => {
-    const result = await  postRepository.update(+req.params.id, req.body);
+    const result = await  postRepository.update(req.params.id, req.body);
     if(result?.error === 'not found') {
         res.status(404).json({});
         return;

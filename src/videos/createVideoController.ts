@@ -44,7 +44,7 @@ export const createVideoController = (req: Request<any, any, InputVideoType>, re
     const publicationDate = createdAt.clone().add(1, 'days');
     const newVideo: VideoDBType = {
         ...req.body,
-        id: Date.now() + Math.floor(Math.random() * 100),
+        id: Date.now() + Math.floor(Math.random() * 100) + "",
         canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: createdAt.toISOString(),

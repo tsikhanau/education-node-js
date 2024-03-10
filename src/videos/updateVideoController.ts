@@ -58,14 +58,14 @@ export const updateVideoController = (req: Request<any, any, UpdateInputVideoTyp
         return
     }
 
-    const video = db.videos.find(v => v.id === +req.params.id);
+    const video = db.videos.find(v => v.id === req.params.id);
 
     if(!video) {
         res.status(404).json({})
     }
 
     db.videos = db.videos.map(v => {
-        if(v.id === +req.params.id) {
+        if(v.id === req.params.id) {
             return {
                 ...v,
                 ...req.body,
