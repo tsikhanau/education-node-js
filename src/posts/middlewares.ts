@@ -1,6 +1,5 @@
 import {Response, Request, NextFunction} from 'express'
 import {body, validationResult} from 'express-validator'
-import {blogRepository} from "../blogs/blogRepository";
 import {FieldValidationError} from "express-validator/src/base";
 import {SETTINGS} from "../settings";
 import {blogCollection} from "../db/mongo-db";

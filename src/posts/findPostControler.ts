@@ -1,4 +1,3 @@
-import {postRepository} from "./postRepository";
 import {Request, Response} from 'express';
 import {PostDBType} from "../db/posts-db-types";
 import {postCollection} from "../db/mongo-db";
