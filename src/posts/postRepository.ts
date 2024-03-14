@@ -1,54 +1,59 @@
-import {InputPostType, PostOutputType} from "../input-output-types/post-types";
+import {InputPostType, InsertPostType } from "../input-output-types/post-types";
 import {PostDBType} from "../db/posts-db-types";
-import {db} from "../db/db";
-import {blogRepository} from "../blogs/blogRepository";
+import {blogCollection, postCollection} from "../db/mongo-db";
+import {ObjectId} from "mongodb";
 
 export const postRepository = {
-    async create(input: InputPostType): Promise<{error?: string, id?: string}> {
-        const blog = await blogRepository.find(input.blogId);
-        const newPost: PostDBType = {
+    async create(input: InputPostType): Promise<{error?: string, id?: ObjectId}> {
+        const blog = await blogCollection.findOne({_id: new ObjectId(input.blogId)});
+        const newPost: InsertPostType = {
             ...input,
             blogName: blog?.name ?? '',
-            id: Date.now() + Math.floor(Math.random() * 100) + '',
         }
-
-        db.posts = [...db.posts, newPost]
-
-        return {id: newPost.id}
-    },
-    async find(id: string): Promise<PostDBType | undefined> {
-        return db.posts.find(p => p.id === id)
-    },
-    async delete(id: string): Promise<{error?: string}> {
-        const postIndex: number = db.posts.findIndex(v => v.id === id);
-        if(postIndex < 0) {
-            return {error: "not found"}
+        try {
+            const insertedInfo = await postCollection.insertOne(newPost);
+            return {id: insertedInfo.insertedId}
+        } catch (e) {
+            return {error: 'Error'}
         }
-
-        db.posts.splice(postIndex, 1);
-        return {};
     },
-    async update(id: string, data: InputPostType): Promise<{error?: string}> {
-        const post = await this.find(id);
-        if(!post) {
-            return {error: "not found"}
+    async find(id: ObjectId): Promise<any> {
+        const post = await postCollection.findOne({_id: id}) as unknown as PostDBType;
+        console.log(post)
+        if(post?._id) {
+            const mappedPost = {
+                id: post._id.toString(),
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                blogId: post.blogId,
+                blogName: post.blogName
+            };
+            return mappedPost;
         }
-
-        db.posts = db.posts.map(p => {
-            if(p.id === id) {
-                return {
-                    ...p,
-                    ...data
-                }
+        return undefined;
+    },
+    async delete(id: ObjectId): Promise<{error?: string}> {
+        try {
+            const result = await postCollection.deleteOne({_id: id});
+            if(result.deletedCount === 0) {
+                return {error: "not found"}
             }
-            return p;
-        });
-        return {};
-    },
-    mapToOutput(post: PostDBType): PostOutputType {
-        return {
-            id: post.id,
-            title: post.title,
+            return {};
+        } catch (e) {
+            return {error: e as string}
         }
-    }
+    },
+    async update(id: ObjectId, data: InputPostType): Promise<{error?: string}> {
+        try {
+            const result = await postCollection.updateOne({_id: id}, {$set: {...data}});
+            if (result.modifiedCount === 0) {
+                return {error: "not found"}
+            }
+
+            return {};
+        } catch (e) {
+            return {error: e as string}
+        }
+    },
 }

@@ -1,49 +1,54 @@
-import {db} from "../db/db";
 import {InputBlogType} from "../input-output-types/blog-types";
 import {BlogDBType} from "../db/blogs-db-types";
+import {blogCollection} from "../db/mongo-db";
+import {ObjectId} from "mongodb";
 
 export const blogRepository = {
-    async create(input: InputBlogType): Promise<{error?: string, id?: string}> {
-        const newBlog: BlogDBType = {
-            ...input,
-            id: Date.now() + Math.floor(Math.random() * 100) + "",
-        }
-
+    async create(input: InputBlogType): Promise<{error?: string, id?: ObjectId}> {
         try {
-            db.blogs = [...db.blogs, newBlog]
-        } catch (e: any) {
-            return {error: e?.message}
+            const insertedInfo = await blogCollection.insertOne({...input, createdAt: new Date().toISOString(), isMembership: false});
+            return {id: new ObjectId(insertedInfo.insertedId)}
+        } catch (e) {
+            return {error: 'Error'}
         }
-
-        return {id: newBlog.id}
     },
-    async find(id: string): Promise<BlogDBType| undefined> {
-        return db.blogs.find(p => p.id === id)
-    },
-    async delete(id: string): Promise<{error?: string}> {
-        const blogIndex: number = db.blogs.findIndex(v => v.id === id);
-        if(blogIndex < 0) {
-            return {error: "not found"}
+    async find(id: ObjectId): Promise<any> {
+        const blog = blogCollection.find({_id: id}) as unknown as BlogDBType;
+        if(blog._id) {
+            const mappedBlog = {
+                id: blog._id,
+                name: blog.name,
+                description: blog.description,
+                websiteUrl: blog.websiteUrl,
+                createdAt: blog.createdAt,
+                isMembership: blog.isMembership
+            };
+            return mappedBlog;
         }
-
-        db.blogs.splice(blogIndex, 1);
-        return {};
+        return undefined;
     },
-    async update(id: string, data: InputBlogType): Promise<{error?: string}> {
-        const blog = await this.find(id);
-        if(!blog) {
-            return {error: "not found"}
-        }
-
-        db.blogs = db.blogs.map(p => {
-            if(p.id === id) {
-                return {
-                    ...p,
-                    ...data
-                }
+    async delete(id: ObjectId): Promise<{error?: string}> {
+        try {
+            const result = await blogCollection.deleteOne({_id: id});
+            if(result.deletedCount === 0) {
+                return {error: "not found"}
             }
-            return p;
-        });
-        return {};
+            return {};
+        } catch (e) {
+            return {error: e as string}
+        }
+    },
+    async update(id: ObjectId, data: InputBlogType): Promise<{error?: string}> {
+        try {
+            const result = await blogCollection.updateOne({_id: id}, {...data});
+
+            if (result.modifiedCount === 0) {
+                return {error: "not found"}
+            }
+
+            return {};
+        } catch (e) {
+            return {error: e as string}
+        }
     },
 }

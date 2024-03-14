@@ -3,6 +3,8 @@ import {body, validationResult} from 'express-validator'
 import {blogRepository} from "../blogs/blogRepository";
 import {FieldValidationError} from "express-validator/src/base";
 import {SETTINGS} from "../settings";
+import {blogCollection} from "../db/mongo-db";
+import {ObjectId} from "mongodb";
 
 const postTitleInputValidator = body('title')
     .isString().withMessage('not string')
@@ -19,7 +21,7 @@ export const postInputValidator = [
     postDescriptionInputValidator,
     postContentInputValidator,
     body('blogId').custom(async (blogId, { req }) => {
-        const blog = await blogRepository.find(blogId)
+        const blog = await blogCollection.findOne({_id: new ObjectId(blogId)})
         if (!blog) { throw new Error('no blog!') }
     }),
 ]

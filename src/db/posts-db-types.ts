@@ -1,5 +1,5 @@
 export type PostDBType = {
-    id: string;
+    _id: string;
     title: string;
     shortDescription: string;
     content: string;

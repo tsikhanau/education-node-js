@@ -20,16 +20,16 @@ export const video1: VideoDBType = {
 }
 
 export const blog1: BlogDBType = {
-    id: Date.now() + Math.floor(Math.random() * 100) + "",
+    _id: Date.now() + Math.floor(Math.random() * 100) + "",
     name: 't' + Date.now() + Math.floor(Math.random() * 100),
     description: 'd' + Date.now() + Math.floor(Math.random() * 100),
     websiteUrl: 'url'
 }
 
 export const post1: PostDBType = {
-    id: Date.now() + Math.floor(Math.random() * 100) + "",
+    _id: Date.now() + Math.floor(Math.random() * 100) + "",
     content: "content",
-    blogId: blog1.id,
+    blogId: blog1._id,
     blogName: "blogName",
     title: 't' + Date.now() + Math.floor(Math.random() * 100),
     shortDescription: 'd' + Date.now() + Math.floor(Math.random() * 100),
