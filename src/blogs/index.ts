@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import {getBlogsController} from "../blogs/getBlogsControler";
-import {createBlogController} from "../blogs/createPostController";
+import {createBlogController} from "./createBlogController";
 import {findBlogController} from "../blogs/findBlogControler";
 import {deleteBlogController} from "../blogs/deleteBlogController";
 import {updateBlogController} from "../blogs/updateBlogController";

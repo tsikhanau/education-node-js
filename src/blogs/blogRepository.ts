@@ -13,8 +13,8 @@ export const blogRepository = {
         }
     },
     async find(id: ObjectId): Promise<any> {
-        const blog = blogCollection.find({_id: id}) as unknown as BlogDBType;
-        if(blog._id) {
+        const blog = await blogCollection.findOne({_id: id}) as unknown as BlogDBType;
+        if(blog?._id) {
             const mappedBlog = {
                 id: blog._id,
                 name: blog.name,
@@ -40,7 +40,7 @@ export const blogRepository = {
     },
     async update(id: ObjectId, data: InputBlogType): Promise<{error?: string}> {
         try {
-            const result = await blogCollection.updateOne({_id: id}, {...data});
+            const result = await blogCollection.updateOne({_id: id}, {$set: {...data}});
 
             if (result.modifiedCount === 0) {
                 return {error: "not found"}

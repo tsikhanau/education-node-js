@@ -3,7 +3,7 @@ import {SETTINGS} from "../src/settings";
 import {blogCollection, connectToDB, postCollection} from "../src/db/mongo-db";
 import {blogRepository} from "../src/blogs/blogRepository";
 import {postRepository} from "../src/posts/postRepository";
-import {PostDBType} from "../src/db/posts-db-types";
+import {ObjectId} from "mongodb";
 
 const buff2 = Buffer.from(SETTINGS.ADMIN_AUTH, 'utf8')
 const codedAuth = buff2.toString('base64');
@@ -101,7 +101,7 @@ describe('/posts', () => {
             blogId: blog.id?.toString() as string,
         })
 
-        const postDetails = await postCollection.findOne({_id: newPost.id}) as unknown as PostDBType;
+        const postDetails = await postRepository.find(new ObjectId(newPost.id));
 
         const updatedPost = {
             title: 't11',
@@ -153,7 +153,7 @@ describe('/posts', () => {
             blogId: blog.id?.toString() as string,
         })
 
-        const postDetails = await postCollection.findOne({_id: newPost.id}) as unknown as PostDBType;
+        const postDetails = await postRepository.find(new ObjectId(newPost.id));
 
         const updatedPost = {
             title: 't11',
