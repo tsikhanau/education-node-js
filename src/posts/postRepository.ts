@@ -19,7 +19,6 @@ export const postRepository = {
     },
     async find(id: ObjectId): Promise<any> {
         const post = await postCollection.findOne({_id: id}) as unknown as PostDBType;
-        console.log(post)
         if(post?._id) {
             const mappedPost = {
                 id: post._id.toString(),
