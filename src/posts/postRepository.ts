@@ -1,4 +1,4 @@
-import {InputPostType, InsertPostType } from "../input-output-types/post-types";
+import {InputPostType, InsertPostType, PostType} from "../input-output-types/post-types";
 import {PostDBType} from "../db/posts-db-types";
 import {blogCollection, postCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
@@ -18,7 +18,7 @@ export const postRepository = {
             return {error: 'Error'}
         }
     },
-    async find(id: ObjectId): Promise<any> {
+    async find(id: ObjectId): Promise<PostType | undefined> {
         const post = await postCollection.findOne({_id: id}) as unknown as PostDBType;
         if(post?._id) {
             const mappedPost = {

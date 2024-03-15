@@ -1,4 +1,4 @@
-import {InputBlogType} from "../input-output-types/blog-types";
+import {BlogType, InputBlogType, InsertBlogType} from "../input-output-types/blog-types";
 import {BlogDBType} from "../db/blogs-db-types";
 import {blogCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
@@ -12,7 +12,7 @@ export const blogRepository = {
             return {error: 'Error'}
         }
     },
-    async find(id: ObjectId): Promise<any> {
+    async find(id: ObjectId): Promise<BlogType | undefined> {
         const blog = await blogCollection.findOne({_id: id}) as unknown as BlogDBType;
         if(blog?._id) {
             const mappedBlog = {

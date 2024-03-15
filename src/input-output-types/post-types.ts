@@ -5,11 +5,6 @@ export type InputPostType = {
     blogId: string;
 }
 
-export type PostOutputType = {
-    id: string;
-    title: string;
-}
-
 export type PostType = {
     id: string;
     title: string;
