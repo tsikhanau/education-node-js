@@ -9,6 +9,7 @@ export const postRepository = {
         const newPost: InsertPostType = {
             ...input,
             blogName: blog?.name ?? '',
+            createdAt: new Date().toISOString(),
         }
         try {
             const insertedInfo = await postCollection.insertOne(newPost);
@@ -26,7 +27,8 @@ export const postRepository = {
                 shortDescription: post.shortDescription,
                 content: post.content,
                 blogId: post.blogId,
-                blogName: post.blogName
+                blogName: post.blogName,
+                createdAt: post.createdAt,
             };
             return mappedPost;
         }

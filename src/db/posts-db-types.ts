@@ -5,4 +5,5 @@ export type PostDBType = {
     content: string;
     blogId: string;
     blogName: string;
+    createdAt: string;
 }

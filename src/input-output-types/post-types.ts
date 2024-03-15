@@ -17,6 +17,7 @@ export type PostType = {
     content: string;
     blogId: string;
     blogName: string;
+    createdAt: string;
 }
 
 export type InsertPostType = {
@@ -25,4 +26,5 @@ export type InsertPostType = {
     content: string;
     blogId: string;
     blogName: string;
+    createdAt: string;
 }

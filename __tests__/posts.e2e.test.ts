@@ -35,7 +35,7 @@ describe('/posts', () => {
         const res = await req
             .get(SETTINGS.PATH.POSTS)
             .expect(200)
-
+        console.log(res.body);
         expect(res.body.length).toBe(1)
     })
     it('should create', async () => {
