@@ -1,4 +1,5 @@
 import {body} from 'express-validator'
+import {postContentInputValidator, postDescriptionInputValidator, postTitleInputValidator} from "../posts/middlewares";
 
 const blogNameInputValidator = body('name')
     .isString().withMessage('not string')
@@ -15,4 +16,10 @@ export const blogInputValidator = [
     blogNameInputValidator,
     blogDescriptionInputValidator,
     blogWebsiteUrlInputValidator,
+]
+
+export const blogPostInputValidator = [
+    postTitleInputValidator,
+    postDescriptionInputValidator,
+    postContentInputValidator,
 ]

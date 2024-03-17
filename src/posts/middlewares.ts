@@ -5,13 +5,13 @@ import {SETTINGS} from "../settings";
 import {blogCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
 
-const postTitleInputValidator = body('title')
+export const postTitleInputValidator = body('title')
     .isString().withMessage('not string')
     .trim().isLength({min: 1, max: 30}).withMessage('incorrect length')
-const postDescriptionInputValidator = body('shortDescription')
+export const postDescriptionInputValidator = body('shortDescription')
     .isString().withMessage('not string')
     .trim().isLength({min: 1, max: 100}).withMessage('incorrect length')
-const postContentInputValidator = body('content')
+export const postContentInputValidator = body('content')
     .isString().withMessage('not string')
     .trim().isLength({min: 1, max: 1000}).withMessage('incorrect length')
 

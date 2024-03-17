@@ -20,3 +20,9 @@ export type BlogType = {
     createdAt: string;
     isMembership: boolean;
 }
+
+export type InputPostType = {
+    title: string;
+    shortDescription: string;
+    content: string;
+}
