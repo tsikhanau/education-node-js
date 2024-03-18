@@ -4,6 +4,9 @@ import {blogCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
 
 export const blogRepository = {
+    async drop() {
+        const res = await blogCollection.drop();
+    },
     async create(input: InputBlogType): Promise<{error?: string, id?: ObjectId}> {
         try {
             const insertedInfo = await blogCollection.insertOne({...input, createdAt: new Date().toISOString(), isMembership: false});

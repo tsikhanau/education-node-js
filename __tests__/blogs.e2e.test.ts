@@ -1,6 +1,6 @@
 import {req} from "./test-helpers";
 import {SETTINGS} from "../src/settings";
-import {blogCollection, connectToDB} from "../src/db/mongo-db";
+import {connectToDB} from "../src/db/mongo-db";
 import {blogRepository} from "../src/blogs/blogRepository";
 import {ObjectId} from "mongodb";
 import {generatePosts} from "./posts.e2e.test";
@@ -18,7 +18,7 @@ const codedAuth = buff2.toString('base64');
 describe('/blogs', () => {
     beforeAll(async () => {
         await connectToDB();
-        await blogCollection.drop();
+        await blogRepository.drop();
     })
 
     it('should get empty array', async () => {
@@ -57,7 +57,7 @@ describe('/blogs', () => {
     it('should return paginated data with search', async () => {
         const blogsList = generateBlogs(40);
         const data = await blogRepository.createMany(blogsList);
-        const searchText = 'bo'
+        const searchText = 'b0'
         const res = await req
             .get(SETTINGS.PATH.BLOGS + `?searchNameTerm=${searchText}`)
             .expect(200)
@@ -105,15 +105,16 @@ describe('/blogs', () => {
         expect(res.body.blogId).toEqual(blogId)
     })
     it('should create', async () => {
-        const blog = await blogRepository.create({name: 'b1',
+        const blog = {
+            name: 'b1',
             description: 'd1',
-            websiteUrl: 'https://someurl.com'});
-
+            websiteUrl: 'https://someurl.com'};
         const res = await req
             .post(SETTINGS.PATH.BLOGS)
             .set({'Authorization': 'Basic ' + codedAuth})
             .send(blog)
             .expect(201)
+        expect(res.body.name).toBe('b1')
     })
     it('shouldn\'t create', async () => {
         const newBlog = {

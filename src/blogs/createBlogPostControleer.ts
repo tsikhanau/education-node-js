@@ -3,10 +3,11 @@ import {InputPostType} from "../input-output-types/blog-types";
 import {Request, Response} from 'express';
 import {blogCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
+import {blogRepository} from "./blogRepository";
 
 export const createBlogPostController = async (req: Request<any, any, InputPostType, {blogId: string}>, res: Response) => {
     const {blogId} = req.params;
-    const blog = await blogCollection.findOne({_id: new ObjectId(blogId)});
+    const blog = await blogRepository.find(new ObjectId(blogId));
     if(!blog) {
         res.status(404).json({});
         return;

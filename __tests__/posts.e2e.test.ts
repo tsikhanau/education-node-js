@@ -1,6 +1,6 @@
 import {req} from "./test-helpers";
 import {SETTINGS} from "../src/settings";
-import {blogCollection, connectToDB, postCollection} from "../src/db/mongo-db";
+import {connectToDB} from "../src/db/mongo-db";
 import {blogRepository} from "../src/blogs/blogRepository";
 import {postRepository} from "../src/posts/postRepository";
 import {ObjectId} from "mongodb";
@@ -18,8 +18,8 @@ const codedAuth = buff2.toString('base64');
 describe('/posts', () => {
     beforeAll(async () => {
         await connectToDB();
-        await blogCollection.drop();
-        await postCollection.drop();
+        await blogRepository.drop();
+        await postRepository.drop();
     })
 
     it('should get empty array', async () => {
@@ -27,7 +27,7 @@ describe('/posts', () => {
             .get(SETTINGS.PATH.POSTS)
             .expect(200)
 
-        expect(res.body.length).toBe(0)
+        expect(res.body.items.length).toBe(0)
     })
     it('should return data', async () => {
         const blog = await blogRepository.create({name: 'b1',
@@ -43,8 +43,7 @@ describe('/posts', () => {
         const res = await req
             .get(SETTINGS.PATH.POSTS)
             .expect(200)
-        console.log(res.body);
-        expect(res.body.length).toBe(1)
+        expect(res.body.items.length).toBe(1)
     })
     it('should create', async () => {
         const blog = await blogRepository.create({name: 'b1',

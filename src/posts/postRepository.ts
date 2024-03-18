@@ -5,6 +5,9 @@ import {ObjectId} from "mongodb";
 import {InputPostType as BlogInputPostType} from "../input-output-types/blog-types";
 
 export const postRepository = {
+    async drop(){
+        const res = await postCollection.drop()
+    },
     async create(input: InputPostType): Promise<{error?: string, id?: ObjectId}> {
         const blog = await blogCollection.findOne({_id: new ObjectId(input.blogId)});
         const newPost: InsertPostType = {
