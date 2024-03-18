@@ -12,6 +12,15 @@ export const blogRepository = {
             return {error: 'Error'}
         }
     },
+    async createMany(input: InputBlogType[]): Promise<{error?: string, insertedIds?: {[key: number]: ObjectId}} > {
+        const items = input.map(item => ({...item, createdAt: new Date().toISOString(), isMembership: false}))
+        try {
+            const insertedInfo = await blogCollection.insertMany(items);
+            return {insertedIds: insertedInfo.insertedIds};
+        } catch (e) {
+            return {error: 'Error'}
+        }
+    },
     async find(id: ObjectId): Promise<BlogType | undefined> {
         const blog = await blogCollection.findOne({_id: id}) as unknown as BlogDBType;
         if(blog?._id) {
