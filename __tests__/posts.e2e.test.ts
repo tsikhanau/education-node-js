@@ -45,6 +45,38 @@ describe('/posts', () => {
             .expect(200)
         expect(res.body.items.length).toBe(1)
     })
+    it('should return paginated data', async () => {
+        const postsList = generatePosts(40);
+                const blog = await blogRepository.create({name: 'b1',
+            description: 'd1',
+            websiteUrl: 'https://someurl.com'});
+        const data = await postRepository.createMany(postsList, blog.id?.toString() as string);
+
+        const res = await req
+            .get(SETTINGS.PATH.POSTS + '?pageNumber=1&pageSize=10&sortBy=title&sortDirection=asc')
+            .expect(200)
+
+        expect(res.body.items.length).toBe(10)
+        expect(res.body.pagesCount).toBe(4)
+        expect(res.body.page).toBe(1)
+        expect(res.body.pageSize).toBe(10)
+        expect(res.body.totalCount).toBe(40)
+        expect(res.body.items[0].title).toBe('t0')
+    })
+    it('should return paginated data with search', async () => {
+        const postsList = generatePosts(40);
+        const blog = await blogRepository.create({name: 'b1',
+            description: 'd1',
+            websiteUrl: 'https://someurl.com'});
+        const data = await postRepository.createMany(postsList, blog.id?.toString() as string);
+        const searchText = 't0'
+        const res = await req
+            .get(SETTINGS.PATH.POSTS + `?searchNameTerm=${searchText}`)
+            .expect(200)
+
+        expect(res.body.totalCount).toBe(1)
+        expect(res.body.items[0].title).toBe(searchText)
+    })
     it('should create', async () => {
         const blog = await blogRepository.create({name: 'b1',
             description: 'd1',

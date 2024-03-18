@@ -18,7 +18,7 @@ export const getPostController = async (req: Request, res: Response<ResponseType
         sortDirection,
         searchNameTerm
     } = getSearchParameters(req.query);
-        const search = searchNameTerm ? {name: {$regex: searchNameTerm, $options: 'i'}} : {};
+        const search = searchNameTerm ? {title: {$regex: searchNameTerm, $options: 'i'}} : {};
 
     const data = postCollection.find({...search}).sort(sortBy, sortDirection).limit(pageSize).skip((pageNumber - 1) * pageSize);
     const result = await data.toArray() as unknown as PostDBType[];
