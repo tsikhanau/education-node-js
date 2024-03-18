@@ -14,7 +14,7 @@ type ResponseType = {
 }
 
 export const getBlogPostsController = async (req: Request, res: Response<ResponseType | Object>) => {
-        const {blogId} = req.params;
+    const {blogId} = req.params;
     const blog = await blogCollection.findOne({_id: new ObjectId(blogId)});
     if(!blog) {
         res.status(404).json({});
@@ -26,13 +26,13 @@ export const getBlogPostsController = async (req: Request, res: Response<Respons
         sortBy,
         sortDirection,
     } = getSearchParameters(req.query);
-    const data = postCollection.find({_id: new ObjectId(blogId)}).sort(sortBy, sortDirection).limit(pageSize).skip((pageNumber - 1) * pageSize);
+    // @ts-ignore
+    const data = postCollection.find({'blogId': blogId}).sort(sortBy, sortDirection).limit(pageSize).skip((pageNumber - 1) * pageSize);
     const result = await data.toArray() as unknown as PostDBType[];
     const mappedData: PostType[] = result.map(({blogId, blogName, content, createdAt, shortDescription, _id, title}) => ({
         blogId, blogName, content, createdAt, shortDescription, title, id: _id
     }))
-
-    const totalCount  = await blogCollection.countDocuments({_id: new ObjectId(blogId)});
+    const totalCount  = await postCollection.countDocuments({blogId});
     const pagesCount = Math.ceil(totalCount / pageSize);
     const response = {
         pagesCount,

@@ -2,6 +2,7 @@ import {InputPostType, InsertPostType, PostType} from "../input-output-types/pos
 import {PostDBType} from "../db/posts-db-types";
 import {blogCollection, postCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
+import {InputPostType as BlogInputPostType} from "../input-output-types/blog-types";
 
 export const postRepository = {
     async create(input: InputPostType): Promise<{error?: string, id?: ObjectId}> {
@@ -14,6 +15,16 @@ export const postRepository = {
         try {
             const insertedInfo = await postCollection.insertOne(newPost);
             return {id: insertedInfo.insertedId}
+        } catch (e) {
+            return {error: 'Error'}
+        }
+    },
+    async createMany(input: BlogInputPostType[], blogId: string): Promise<{error?: string, insertedIds?: {[key: number]: ObjectId}} > {
+        const blog = await blogCollection.findOne({_id: new ObjectId(blogId)});
+        const items = input.map(item => ({...item, blogId, createdAt: new Date().toISOString(), blogName: blog?.name ?? '',}))
+        try {
+            const insertedInfo = await postCollection.insertMany(items);
+            return {insertedIds: insertedInfo.insertedIds};
         } catch (e) {
             return {error: 'Error'}
         }

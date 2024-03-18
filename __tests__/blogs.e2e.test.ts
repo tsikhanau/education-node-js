@@ -3,6 +3,9 @@ import {SETTINGS} from "../src/settings";
 import {blogCollection, connectToDB} from "../src/db/mongo-db";
 import {blogRepository} from "../src/blogs/blogRepository";
 import {ObjectId} from "mongodb";
+import {generatePosts} from "./posts.e2e.test";
+import {postRepository} from "../src/posts/postRepository";
+import {InputPostType} from "../src/input-output-types/blog-types";
 const generateBlogs = (length: number) => {
     return [...Array(length).keys()].map(i => ({
         name: 'b' + i,
@@ -54,13 +57,31 @@ describe('/blogs', () => {
     it('should return paginated data with search', async () => {
         const blogsList = generateBlogs(40);
         const data = await blogRepository.createMany(blogsList);
-
+        const searchText = 'bo'
         const res = await req
-            .get(SETTINGS.PATH.BLOGS + '?searchNameTerm=b0')
+            .get(SETTINGS.PATH.BLOGS + `?searchNameTerm=${searchText}`)
             .expect(200)
 
         expect(res.body.totalCount).toBe(1)
-        expect(res.body.items[0].name).toBe('b0')
+        expect(res.body.items[0].name).toBe(searchText)
+    })
+    it('should return paginated posts', async () => {
+        const blog = await blogRepository.create({name: 'b1',
+            description: 'd1',
+            websiteUrl: 'https://someurl.com'});
+
+        const blogId = blog.id?.toString() as string;
+        const postsList: InputPostType[] = generatePosts(40);
+        const data = await postRepository.createMany(postsList, blogId);
+        const res = await req
+            .get(SETTINGS.PATH.BLOGS + `/${blogId}/posts?sortBy=title&sortDirection=asc`)
+            .expect(200)
+        expect(res.body.items.length).toBe(10)
+        expect(res.body.pagesCount).toBe(4)
+        expect(res.body.page).toBe(1)
+        expect(res.body.pageSize).toBe(10)
+        expect(res.body.totalCount).toBe(40)
+        expect(res.body.items[0].title).toBe('t0')
     })
     it('should create post', async () => {
         const blog = await blogRepository.create({name: 'b1',

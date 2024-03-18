@@ -4,7 +4,15 @@ import {blogCollection, connectToDB, postCollection} from "../src/db/mongo-db";
 import {blogRepository} from "../src/blogs/blogRepository";
 import {postRepository} from "../src/posts/postRepository";
 import {ObjectId} from "mongodb";
+import {InputPostType} from "../src/input-output-types/blog-types";
 
+export const generatePosts = (length: number): InputPostType[] => {
+    return [...Array(length).keys()].map(i => ({
+        title: 't' + i,
+        shortDescription: 'd' + i,
+        content: 'c' + i,
+    }))
+}
 const buff2 = Buffer.from(SETTINGS.ADMIN_AUTH, 'utf8')
 const codedAuth = buff2.toString('base64');
 describe('/posts', () => {
@@ -107,8 +115,8 @@ describe('/posts', () => {
             title: 't11',
             content: 'c12',
             shortDescription: 'd13',
-            blogId: postDetails.blogId,
-            blogName: postDetails.blogName
+            blogId: postDetails?.blogId,
+            blogName: postDetails?.blogName
         }
 
         const res = await req
@@ -159,8 +167,8 @@ describe('/posts', () => {
             title: 't11',
             content: 'c12',
             shortDescription: 'd13',
-            blogId: postDetails.blogId,
-            blogName: postDetails.blogName
+            blogId: postDetails?.blogId,
+            blogName: postDetails?.blogName
         }
 
         const res = await req
