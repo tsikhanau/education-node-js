@@ -37,7 +37,7 @@ export const blogRepository = {
             };
             return mappedBlog;
         }
-        return undefined;
+        return;
     },
     async delete(id: ObjectId): Promise<{error?: string}> {
         try {

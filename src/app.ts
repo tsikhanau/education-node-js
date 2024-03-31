@@ -5,6 +5,7 @@ import {setDB} from "./db/db";
 import {postsRouter} from "./posts";
 import {blogsRouter} from "./blogs";
 import {blogCollection, postCollection} from "./db/mongo-db";
+import {usersRouter} from "./users";
 
 export const app = express()
 app.use(express.json())
@@ -18,3 +19,4 @@ app.delete('/testing/all-data', (req, res) => {
 app.use(SETTINGS.PATH.VIDEOS, videosRouter);
 app.use(SETTINGS.PATH.POSTS, postsRouter);
 app.use(SETTINGS.PATH.BLOGS, blogsRouter);
+app.use(SETTINGS.PATH.USERS, usersRouter);
