@@ -21,7 +21,7 @@ export const getUsersController = async (req: Request, res: Response<ResponseTyp
     } = getSearchParameters(req.query);
     const searchLoginTerm = req.query.searchLoginTerm ? {login: {$regex: req.query.searchLoginTerm, $options: 'i'}} : {}
     const searchEmailTerm = req.query.searchEmailTerm ? {email: {$regex: req.query.searchEmailTerm, $options: 'i'}} : {}
-    const search = {...searchLoginTerm, ...searchEmailTerm};
+    const search = {$or: [{...searchLoginTerm}, {...searchEmailTerm}]};
     // @ts-ignore
     const data = userCollection.find({...search}).sort(sortBy, sortDirection).limit(pageSize).skip((pageNumber - 1) * pageSize);
     const result = await data.toArray() as unknown as UserDBType[];

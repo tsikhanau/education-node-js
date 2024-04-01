@@ -13,8 +13,17 @@ const userPasswordValidator = body('login')
     .isString().withMessage('not string')
     .trim().isLength({min: 6, max: 20}).withMessage('incorrect length')
 
+const loginOrEmailValidator = body('loginOrEmail')
+    .isString().withMessage('not string')
+    .trim().isLength({min: 3}).withMessage('incorrect length')
+
 export const userInputValidator = [
     userLoginValidator,
     userEmailValidator,
+    userPasswordValidator
+]
+
+export const authInputValidator = [
+    loginOrEmailValidator,
     userPasswordValidator
 ]

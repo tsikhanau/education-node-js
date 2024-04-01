@@ -2,6 +2,7 @@ import {userCollection} from "../db/mongo-db";
 import {InputUserType, UserType} from "../input-output-types/user_types";
 import {ObjectId} from "mongodb";
 import {UserDBType} from "../db/user-db-types";
+import {bcryptService} from "./bcryptServeice";
 
 export const userRepository = {
     async drop() {
@@ -9,7 +10,8 @@ export const userRepository = {
     },
     async create(input: InputUserType): Promise<{error?: string, id?: ObjectId}> {
         try {
-            const insertedInfo = await userCollection.insertOne({...input, createdAt: new Date().toISOString()});
+            const password = await bcryptService.generateHash(input.password);
+            const insertedInfo = await userCollection.insertOne({...input, password, createdAt: new Date().toISOString()});
             return {id: new ObjectId(insertedInfo.insertedId)}
         } catch (e) {
             return {error: 'Error'}
@@ -36,6 +38,13 @@ export const userRepository = {
                 createdAt: user.createdAt
             }
             return mappedUser;
+        }
+        return;
+    },
+    async findByLoginOrEmail(search: string): Promise<UserDBType | undefined> {
+        const user = await userCollection.findOne({$or: [{login: {$regex: search}}, {password: {$regex: search}}]}) as unknown as UserDBType;
+        if(user?._id){
+            return user;
         }
         return;
     }
