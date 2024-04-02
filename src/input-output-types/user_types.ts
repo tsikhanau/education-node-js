@@ -17,3 +17,8 @@ export type InsertUserType = {
     email: string;
     createdAt: string;
 }
+
+export type AuthInput = {
+    loginOrEmail: string,
+    password: string
+}

@@ -2,9 +2,10 @@ import {req} from "./test-helpers";
 import {SETTINGS} from "../src/settings";
 import {connectToDB} from "../src/db/mongo-db";
 import {userRepository} from "../src/users/userReposetory";
+import {ObjectId} from "mongodb";
 
 const default_user = {
-    login: 'b1',
+    login: 'user',
     email: 'someurl@test.com',
     password: 'abc123ABC'
 }
@@ -66,5 +67,38 @@ describe('/blogs', () => {
             .delete(SETTINGS.PATH.USERS + '/111111111111111111111111')
             .set({'Authorization': 'Basic ' + codedAuth})
             .expect(404)
+    })
+    it('should success login', async () => {
+        const result = await userRepository.create(default_user);
+        const user = {
+            loginOrEmail: default_user.login,
+            password: default_user.password
+        }
+        const res = await req
+            .post('/auth/login')
+            .send(user)
+            .expect(204)
+    })
+    it('should fail login', async () => {
+        const result = await userRepository.create(default_user);
+        const user = {
+            loginOrEmail: default_user.login + 'aaa',
+            password: default_user.password
+        }
+        const res = await req
+            .post('/auth/login')
+            .send(user)
+            .expect(401)
+    })
+    it('should fail login because of incorrect payload', async () => {
+        const result = await userRepository.create(default_user);
+        const user = {
+            loginOrEmail: 'a',
+            password: 'A'
+        }
+        const res = await req
+            .post('/auth/login')
+            .send(user)
+            .expect(400)
     })
 })
