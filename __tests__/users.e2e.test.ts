@@ -3,6 +3,7 @@ import {SETTINGS} from "../src/settings";
 import {connectToDB} from "../src/db/mongo-db";
 import {userRepository} from "../src/users/userReposetory";
 import {ObjectId} from "mongodb";
+import {jwtService} from "../src/helpers/jwt.service";
 
 const default_user = {
     login: 'user',
@@ -77,7 +78,12 @@ describe('/blogs', () => {
         const res = await req
             .post('/auth/login')
             .send(user)
-            .expect(204)
+            .expect(200)
+
+        if(result?.id) {
+            const expectedResult = await jwtService.createToken(result.id.toString())
+            expect(res.body.accessToken).toBe(expectedResult)
+        }
     })
     it('should fail login', async () => {
         const result = await userRepository.create(default_user);

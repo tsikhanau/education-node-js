@@ -8,7 +8,8 @@ import {blogCollection, postCollection, userCollection} from "./db/mongo-db";
 import {usersRouter} from "./users";
 import {authService} from "./users/authService";
 import {authInputValidator} from "./users/middlewares";
-import {authMiddleware, inputCheckErrorsMiddleware} from "./posts/middlewares";
+import {authJWTMiddleware, authMiddleware, inputCheckErrorsMiddleware} from "./posts/middlewares";
+import {getAuthMeController} from "./users/getAuthMeController";
 
 export const app = express()
 app.use(express.json())
@@ -19,8 +20,9 @@ app.delete('/testing/all-data', (req, res) => {
     postCollection.drop();
     userCollection.drop();
     res.status(204).json([])
-})
+});
 app.post('/auth/login', ...authInputValidator, inputCheckErrorsMiddleware, authService),
+app.get('/auth/me', authJWTMiddleware, getAuthMeController),
 app.use(SETTINGS.PATH.VIDEOS, videosRouter);
 app.use(SETTINGS.PATH.POSTS, postsRouter);
 app.use(SETTINGS.PATH.BLOGS, blogsRouter);

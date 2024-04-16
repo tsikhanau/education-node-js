@@ -4,6 +4,7 @@ import {FieldValidationError} from "express-validator/src/base";
 import {SETTINGS} from "../settings";
 import {blogCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
+import {jwtService} from "../helpers/jwt.service";
 
 export const postTitleInputValidator = body('title')
     .isString().withMessage('not string')
@@ -56,3 +57,26 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     next()
 }
+
+export const authJWTMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.headers.authorization as string
+    if (!authHeader) {
+        res
+            .status(401)
+            .json({})
+        return
+    }
+    const auth = authHeader.split(" ");
+    const token = auth[1];
+    try {
+        const result = await jwtService.verifyToken(token);
+        // @ts-ignore
+        req.userId = result.userId as string;
+    } catch {
+        res.status(401)
+            .json({})
+    }
+
+    next()
+}
+

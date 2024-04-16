@@ -2,6 +2,7 @@ import {Request, Response} from 'express';
 import {userRepository} from "./userReposetory";
 import {bcryptService} from "./bcryptServeice";
 import {AuthInput} from "../input-output-types/user_types";
+import {jwtService} from "../helpers/jwt.service";
 
 export const authService = async (req: Request<any, any, AuthInput>, res: Response ) => {
     const user = await userRepository.findByLoginOrEmail(req.body.loginOrEmail);
@@ -9,7 +10,9 @@ export const authService = async (req: Request<any, any, AuthInput>, res: Respon
 
     if (!isCorrect) {
         res.status(401).json({});
-        return
+        return;
     }
-    res.status(204).json({});
+
+    const accessToken = await jwtService.createToken(user!._id.toString());
+    res.status(200).json({accessToken});
 }

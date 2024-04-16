@@ -8,6 +8,7 @@ export const SETTINGS = {
     BLOG_COLLECTION_NAME: 'blogs',
     POST_COLLECTION_NAME: 'posts',
     USERS_COLLECTION_NAME: 'users',
+    COMMENTS_COLLECTION_NAME: 'comments',
     ADMIN_AUTH: 'admin:qwerty',
     PATH: {
         VIDEOS: '/videos',
