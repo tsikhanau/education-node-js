@@ -5,6 +5,8 @@ import {blogRepository} from "../src/blogs/blogRepository";
 import {postRepository} from "../src/posts/postRepository";
 import {ObjectId} from "mongodb";
 import {InputPostType} from "../src/input-output-types/blog-types";
+import {userRepository} from "../src/users/userReposetory";
+import {default_user} from "./users.e2e.test";
 
 export const generatePosts = (length: number): InputPostType[] => {
     return [...Array(length).keys()].map(i => ({
@@ -229,5 +231,37 @@ describe('/posts', () => {
             .delete(SETTINGS.PATH.POSTS + '/111111111111111111111111')
             .set({'Authorization': 'Basic ' + codedAuth})
             .expect(404)
+    })
+    it('should create comment', async () => {
+        const userResult = await userRepository.create(default_user);
+        const user = {
+            loginOrEmail: default_user.login,
+            password: default_user.password
+        }
+        const userRes = await req
+            .post('/auth/login')
+            .send(user)
+        const blog = await blogRepository.create({name: 'b1',
+            description: 'd1',
+            websiteUrl: 'https://someurl.com'});
+
+
+        const newPost = await postRepository.create({
+            title: 't1',
+            shortDescription: 'd1',
+            content: 'c1',
+            blogId: blog.id?.toString() as string,
+        })
+        const content = {
+            content: 'A'.repeat(21)
+        };
+        const res = await req
+            .post(SETTINGS.PATH.POSTS + '/' + newPost.id?.toString() + '/comments')
+            .set({'Authorization': 'Bearer ' + userRes.body.accessToken})
+            .send(content)
+            .expect(201)
+        expect(res.body.commentatorInfo.userLogin).toBe(default_user.login);
+        // expect(res.body.commentatorInfo.userId).toBe(userResult?.id?.toString());
+
     })
 })

@@ -42,7 +42,7 @@ export const userRepository = {
         return;
     },
     async findByLoginOrEmail(search: string): Promise<UserDBType | undefined> {
-        const user = await userCollection.findOne({$or: [{login: {$regex: search}}, {password: {$regex: search}}]}) as unknown as UserDBType;
+        const user = await userCollection.findOne({$or: [{login: {$regex: search}}, {email: {$regex: search}}]}) as unknown as UserDBType;
         if(user?._id){
             return user;
         }

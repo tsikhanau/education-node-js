@@ -2,10 +2,9 @@ import {req} from "./test-helpers";
 import {SETTINGS} from "../src/settings";
 import {connectToDB} from "../src/db/mongo-db";
 import {userRepository} from "../src/users/userReposetory";
-import {ObjectId} from "mongodb";
 import {jwtService} from "../src/helpers/jwt.service";
 
-const default_user = {
+export const default_user = {
     login: 'user',
     email: 'someurl@test.com',
     password: 'abc123ABC'

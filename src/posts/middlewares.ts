@@ -71,7 +71,7 @@ export const authJWTMiddleware = async (req: Request, res: Response, next: NextF
     try {
         const result = await jwtService.verifyToken(token);
         // @ts-ignore
-        req.userId = result.userId as string;
+        res.userId = result.userId as string;
     } catch {
         res.status(401)
             .json({})
