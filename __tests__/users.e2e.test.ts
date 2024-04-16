@@ -107,4 +107,22 @@ describe('/blogs', () => {
             .send(user)
             .expect(400)
     })
+    it('should return user data', async () => {
+        const result = await userRepository.create(default_user);
+        const user = {
+            loginOrEmail: default_user.login,
+            password: default_user.password
+        }
+        const res = await req
+            .post('/auth/login')
+            .send(user)
+
+        const res2 = await req
+            .get('/auth/me')
+            .set({'Authorization': 'Bearer ' + res.body.accessToken})
+            .expect(200)
+
+        expect(res2.body.email).toBe(default_user.email)
+        expect(res2.body.login).toBe(default_user.login)
+    })
 })
