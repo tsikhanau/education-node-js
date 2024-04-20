@@ -69,15 +69,28 @@ export const authJWTMiddleware = async (req: Request, res: Response, next: NextF
     }
     const auth = authHeader.split(" ");
     const token = auth[1];
+    if(auth[0] !== 'Bearer') {
+        res
+            .status(401)
+            .json({})
+        return;
+    }
     try {
         const result = await jwtService.verifyToken(token);
+        if (!result.userId) {
+            res
+                .status(401)
+                .json({})
+            return;
+        }
         // @ts-ignore
         res.userId = result.userId as string;
-    } catch {
-        res.status(401)
-            .json({})
+    } catch (e) {
+        res
+                .status(401)
+                .json({})
+            return;
     }
-
-    next()
+    next();
 }
 

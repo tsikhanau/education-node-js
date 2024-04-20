@@ -6,12 +6,15 @@ import {SETTINGS} from "../src/settings";
 import {userRepository} from "../src/users/userReposetory";
 import {default_user} from "./users.e2e.test";
 import {CommentOutputType} from "../src/input-output-types/comment-types";
+import {commentRepository} from "../src/comments/commentRepository";
 
 describe('/comments', () => {
     beforeAll(async () => {
         await connectToDB();
         await blogRepository.drop();
         await postRepository.drop();
+        await userRepository.drop();
+        await commentRepository.drop();
     })
 
     it('should delete comment', async () => {
@@ -59,18 +62,22 @@ describe('/comments', () => {
             .delete(SETTINGS.PATH.COMMENTS + '/111111111111111111111111')
             .set({'Authorization': 'Bearer ' + userRes.body.accessToken})
             .expect(404)
-
         const res2 = await req
-//@ts-ignore
+            //@ts-ignore
+            .delete(SETTINGS.PATH.COMMENTS + '/' + commentRes.body.id)
+            .set({"Authorization":"Bearer YWRtaW46cXdlcnR5"})
+            .expect(401)
+
+        const res3 = await req
+            //@ts-ignore
             .delete(SETTINGS.PATH.COMMENTS + '/' + commentRes.body.id)
             .set({'Authorization': 'Bearer ' + userRes1.body.accessToken})
             .expect(403)
-
-        const res3 = await req
-//@ts-ignore
+        const res4 = await req
+            //@ts-ignore
             .delete(SETTINGS.PATH.COMMENTS + '/' + commentRes.body.id)
             .set({'Authorization': 'Bearer ' + userRes.body.accessToken})
             .expect(204)
 
-    })
+    }, 120000)
 })

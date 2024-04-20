@@ -20,7 +20,6 @@ export const deleteCommentController =  async (req: Request<any, any, {id: strin
     }
 
     const result = await commentRepository.delete(new ObjectId(req.params.id));
-
     res
         .status(204)
         .json({})
