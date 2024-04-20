@@ -5,6 +5,7 @@ import {SETTINGS} from "../settings";
 import {blogCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
 import {jwtService} from "../helpers/jwt.service";
+import {commentRepository} from "../comments/commentRepository";
 
 export const postTitleInputValidator = body('title')
     .isString().withMessage('not string')
