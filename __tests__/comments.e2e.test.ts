@@ -18,8 +18,8 @@ describe('/comments', () => {
     })
 
     it('should delete comment', async () => {
-        const userResult = await userRepository.create(default_user);
-        const userResult1 = await userRepository.create({...default_user, login: 'user1'});
+        await userRepository.create(default_user);
+        await userRepository.create({...default_user, login: 'user1'});
 
         const user = {
             loginOrEmail: default_user.login,
@@ -58,26 +58,26 @@ describe('/comments', () => {
             .post(SETTINGS.PATH.POSTS + '/' + newPost.id?.toString() + '/comments')
             .set({'Authorization': 'Bearer ' + userRes.body.accessToken})
             .send(content)
-        const res1 = await req
+        await req
             .delete(SETTINGS.PATH.COMMENTS + '/111111111111111111111111')
             .set({'Authorization': 'Bearer ' + userRes.body.accessToken})
             .expect(404)
-        const res2 = await req
+        await req
             //@ts-ignore
             .delete(SETTINGS.PATH.COMMENTS + '/' + commentRes.body.id)
             .set({"Authorization":"Bearer YWRtaW46cXdlcnR5"})
             .expect(401)
 
-        const res3 = await req
+        await req
             //@ts-ignore
             .delete(SETTINGS.PATH.COMMENTS + '/' + commentRes.body.id)
             .set({'Authorization': 'Bearer ' + userRes1.body.accessToken})
             .expect(403)
-        const res4 = await req
+        await req
             //@ts-ignore
             .delete(SETTINGS.PATH.COMMENTS + '/' + commentRes.body.id)
             .set({'Authorization': 'Bearer ' + userRes.body.accessToken})
             .expect(204)
 
-    }, 120000)
+    })
 })
