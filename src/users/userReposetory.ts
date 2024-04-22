@@ -3,7 +3,8 @@ import {InputUserType, UserType} from "../input-output-types/user_types";
 import {ObjectId} from "mongodb";
 import {UserDBType} from "../db/user-db-types";
 import {bcryptService} from "./bcryptServeice";
-
+import {InputRegistrationType} from "../input-output-types/auth-types";
+import crypto from 'crypto';
 export const userRepository = {
     async drop() {
         const res = await userCollection.drop();
@@ -12,6 +13,26 @@ export const userRepository = {
         try {
             const password = await bcryptService.generateHash(input.password);
             const insertedInfo = await userCollection.insertOne({...input, password, createdAt: new Date().toISOString()});
+            return {id: new ObjectId(insertedInfo.insertedId)}
+        } catch (e) {
+            return {error: 'Error'}
+        }
+    },
+    async createRegistrationData(input: InputRegistrationType): Promise<{error?: string, id?: ObjectId}>{
+        try {
+            const password = await bcryptService.generateHash(input.password);
+            const confirmationCode = crypto.randomUUID();
+            const date = new Date()
+            const createdAt = date.toISOString();
+            const confirmationCodeExpirationDate = date.setTime(date.getTime() + 60 * 60 * 1000);
+            const insertedInfo = await userCollection.insertOne({
+                ...input,
+                password,
+                createdAt,
+                confirmationCode,
+                confirmationCodeExpirationDate,
+                isConfirmed: false
+            });
             return {id: new ObjectId(insertedInfo.insertedId)}
         } catch (e) {
             return {error: 'Error'}

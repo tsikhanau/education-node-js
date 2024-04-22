@@ -16,6 +16,9 @@ export type InsertUserType = {
     password: string;
     email: string;
     createdAt: string;
+    confirmationCode?: string;
+    confirmationCodeExpirationDate?: number;
+    isConfirmed?: boolean;
 }
 
 export type AuthInput = {
