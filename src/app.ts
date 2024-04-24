@@ -14,6 +14,7 @@ import {postRepository} from "./posts/postRepository";
 import {userRepository} from "./users/userReposetory";
 import {commentRepository} from "./comments/commentRepository";
 import {commentRouter} from "./comments";
+import {registrationController} from "./auth/registrationController";
 
 export const app = express()
 app.use(express.json())
@@ -28,6 +29,7 @@ app.delete('/testing/all-data', (req, res) => {
 });
 app.post('/auth/login', ...authInputValidator, inputCheckErrorsMiddleware, authService),
 app.get('/auth/me', authJWTMiddleware, getAuthMeController),
+app.post('/auth/registration', registrationController),
 app.use(SETTINGS.PATH.VIDEOS, videosRouter);
 app.use(SETTINGS.PATH.POSTS, postsRouter);
 app.use(SETTINGS.PATH.BLOGS, blogsRouter);

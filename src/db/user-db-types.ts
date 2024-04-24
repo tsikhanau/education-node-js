@@ -4,4 +4,7 @@ export type UserDBType = {
     email: string;
     password: string;
     createdAt: string;
+    confirmationCode?: string;
+    confirmationCodeExpirationDate?: string;
+    isConfirmed?: boolean;
 }

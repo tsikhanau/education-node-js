@@ -18,7 +18,7 @@ export const userRepository = {
             return {error: 'Error'}
         }
     },
-    async createRegistrationData(input: InputRegistrationType): Promise<{error?: string, id?: ObjectId}>{
+    async createRegistrationData(input: InputRegistrationType): Promise<{error?: string, id?: string}>{
         try {
             const password = await bcryptService.generateHash(input.password);
             const confirmationCode = crypto.randomUUID();
@@ -33,7 +33,7 @@ export const userRepository = {
                 confirmationCodeExpirationDate,
                 isConfirmed: false
             });
-            return {id: new ObjectId(insertedInfo.insertedId)}
+            return {id: insertedInfo.insertedId.toString()}
         } catch (e) {
             return {error: 'Error'}
         }
@@ -59,6 +59,13 @@ export const userRepository = {
                 createdAt: user.createdAt
             }
             return mappedUser;
+        }
+        return;
+    },
+    async findRegistered(id: ObjectId): Promise<UserDBType | undefined> {
+        const user = await userCollection.findOne({_id: id}) as unknown as UserDBType;
+        if(user?._id) {
+            return user;
         }
         return;
     },
