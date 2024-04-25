@@ -20,7 +20,7 @@ export const registrationController = async (req: Request<any, any, InputRegistr
 
     const result = await transport.sendMail({
         from: 'alex1.july1@mail.ru',
-        to: user?.password,
+        to: user?.email,
         subject: 'registration',
         html: `<h1>Thanks for your registration</h1>
            <p>To finish registration please follow the link below:

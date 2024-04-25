@@ -15,6 +15,12 @@ import {userRepository} from "./users/userReposetory";
 import {commentRepository} from "./comments/commentRepository";
 import {commentRouter} from "./comments";
 import {registrationController} from "./auth/registrationController";
+import {registrationConfirmationController} from "./auth/registrationConfirmationController";
+import {
+    postRegistrationConfirmationValidator, postRegistrationEmailResendingValidator, postRegistrationEmailValidator,
+    postRegistrationLoginValidator,
+} from "./auth/middlewares";
+import {registrationEmailResendingController} from "./auth/registrationEmailResending";
 
 export const app = express()
 app.use(express.json())
@@ -27,9 +33,11 @@ app.delete('/testing/all-data', (req, res) => {
     commentRepository.drop();
     res.status(204).json([])
 });
-app.post('/auth/login', ...authInputValidator, inputCheckErrorsMiddleware, authService),
-app.get('/auth/me', authJWTMiddleware, getAuthMeController),
-app.post('/auth/registration', registrationController),
+app.post('/auth/login', ...authInputValidator, inputCheckErrorsMiddleware, authService);
+app.get('/auth/me', authJWTMiddleware, getAuthMeController);
+app.post('/auth/registration', postRegistrationEmailValidator, postRegistrationLoginValidator, inputCheckErrorsMiddleware, registrationController);
+app.post('/auth/registration-email-resending', postRegistrationEmailResendingValidator, inputCheckErrorsMiddleware, registrationEmailResendingController);
+app.post('/auth/registration-confirmation', postRegistrationConfirmationValidator, inputCheckErrorsMiddleware, registrationConfirmationController);
 app.use(SETTINGS.PATH.VIDEOS, videosRouter);
 app.use(SETTINGS.PATH.POSTS, postsRouter);
 app.use(SETTINGS.PATH.BLOGS, blogsRouter);

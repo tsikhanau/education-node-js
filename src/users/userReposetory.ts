@@ -24,7 +24,8 @@ export const userRepository = {
             const confirmationCode = crypto.randomUUID();
             const date = new Date()
             const createdAt = date.toISOString();
-            const confirmationCodeExpirationDate = date.setTime(date.getTime() + 60 * 60 * 1000);
+            const expirationDate = date.setTime(date.getTime() + 2 * 60 * 60 * 1000);
+            const confirmationCodeExpirationDate = new Date(expirationDate).toISOString();
             const insertedInfo = await userCollection.insertOne({
                 ...input,
                 password,
@@ -68,6 +69,36 @@ export const userRepository = {
             return user;
         }
         return;
+    },
+    async findByCode(code: string): Promise<string | undefined> {
+        const user = await userCollection.findOne({confirmationCode: {$regex: code}}) as unknown as UserDBType;
+        return user?._id;
+    },
+    async markAsConfirmed(code: string): Promise<boolean> {
+        const userId = this.findByCode(code);
+        if(userId) {
+            const res = await userCollection.updateOne({_id: userId}, {$set: {isConfirmed: true}})
+            return true;
+        }
+        return false
+    },
+    async updateConfirmation(id: ObjectId): Promise<{error?: string, confirmationCode?: string}> {
+        try {
+            const confirmationCode = crypto.randomUUID();
+            const date = new Date()
+            const expirationDate = date.setTime(date.getTime() + 2 * 60 * 60 * 1000);
+            const confirmationCodeExpirationDate = new Date(expirationDate).toISOString();
+            const res = await userCollection.updateOne({_id: id}, {
+                $set: {
+                    confirmationCodeExpirationDate,
+                    confirmationCode,
+                    isConfirmed: false
+                }
+            });
+            return {confirmationCode};
+        } catch (e) {
+            return {error: e as string}
+        }
     },
     async findByLoginOrEmail(search: string): Promise<UserDBType | undefined> {
         const user = await userCollection.findOne({$or: [{login: {$regex: search}}, {email: {$regex: search}}]}) as unknown as UserDBType;

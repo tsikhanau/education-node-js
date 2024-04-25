@@ -17,7 +17,7 @@ export type InsertUserType = {
     email: string;
     createdAt: string;
     confirmationCode?: string;
-    confirmationCodeExpirationDate?: number;
+    confirmationCodeExpirationDate?: string;
     isConfirmed?: boolean;
 }
 

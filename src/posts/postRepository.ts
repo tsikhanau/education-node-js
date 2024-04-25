@@ -65,7 +65,6 @@ export const postRepository = {
             if (result.modifiedCount === 0) {
                 return {error: "not found"}
             }
-
             return {};
         } catch (e) {
             return {error: e as string}
