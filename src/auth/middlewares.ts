@@ -1,4 +1,4 @@
-import {body, validationResult} from 'express-validator'
+import {body} from 'express-validator'
 import {ObjectId} from "mongodb";
 
 import {userRepository} from "../users/userReposetory";
@@ -7,8 +7,6 @@ export const postRegistrationConfirmationValidator = body('code').custom(async (
     const userId = await userRepository.findByCode(code);
     if(!userId) {throw new Error('incorrect code')}
     const userDetails = await userRepository.findRegistered(new ObjectId(userId));
-    console.log(code);
-    console.log(userDetails)
     if(userDetails?.isConfirmed) {throw new Error('already applied')}
     const isExpired = (userDetails?.confirmationCodeExpirationDate || '0') < new Date().toISOString();
     if(isExpired) {throw new Error('expired')}
@@ -30,6 +28,7 @@ export const postRegistrationEmailValidator = body('email')
         const user = await userRepository.findByLoginOrEmail(email);
         if(user) {throw new Error('existed')}
 })
+
 export const postRegistrationLoginValidator = body('login')
     .isString().withMessage('not string')
     .trim().isLength({min: 3, max: 10}).withMessage('incorrect length')
@@ -38,3 +37,7 @@ export const postRegistrationLoginValidator = body('login')
         const user = await userRepository.findByLoginOrEmail(login);
         if(user) {throw new Error('existed')}
 })
+
+export const postRegistrationPasswordValidator = body('password')
+    .isString().withMessage('not string')
+    .trim().isLength({min: 6, max: 20}).withMessage('incorrect length')

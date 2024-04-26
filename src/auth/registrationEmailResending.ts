@@ -23,9 +23,9 @@ export const registrationEmailResendingController = async (req: Request<any, any
                 to: user?.email,
                 subject: 'registration',
                 html: `<h1>Thanks for your registration</h1>
-           <p>To finish registration please follow the link below:
-               <a href='https://somesite.com/confirm-registration?code=${code.confirmationCode}'>complete registration</a>
-           </p>`
+                      <p>To finish registration please follow the link below:
+                          <a href='https://somesite.com/confirm-registration?code=${code.confirmationCode}'>complete registration</a>
+                      </p>`
             })
             res.status(204).json({});
         }

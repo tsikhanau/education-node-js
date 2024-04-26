@@ -18,7 +18,7 @@ import {registrationController} from "./auth/registrationController";
 import {registrationConfirmationController} from "./auth/registrationConfirmationController";
 import {
     postRegistrationConfirmationValidator, postRegistrationEmailResendingValidator, postRegistrationEmailValidator,
-    postRegistrationLoginValidator,
+    postRegistrationLoginValidator, postRegistrationPasswordValidator,
 } from "./auth/middlewares";
 import {registrationEmailResendingController} from "./auth/registrationEmailResending";
 
@@ -35,7 +35,7 @@ app.delete('/testing/all-data', (req, res) => {
 });
 app.post('/auth/login', ...authInputValidator, inputCheckErrorsMiddleware, authService);
 app.get('/auth/me', authJWTMiddleware, getAuthMeController);
-app.post('/auth/registration', postRegistrationEmailValidator, postRegistrationLoginValidator, inputCheckErrorsMiddleware, registrationController);
+app.post('/auth/registration', postRegistrationEmailValidator, postRegistrationLoginValidator, postRegistrationPasswordValidator, inputCheckErrorsMiddleware, registrationController);
 app.post('/auth/registration-email-resending', postRegistrationEmailResendingValidator, inputCheckErrorsMiddleware, registrationEmailResendingController);
 app.post('/auth/registration-confirmation', postRegistrationConfirmationValidator, inputCheckErrorsMiddleware, registrationConfirmationController);
 app.use(SETTINGS.PATH.VIDEOS, videosRouter);
