@@ -4,11 +4,11 @@ import {ObjectId} from "mongodb";
 import {userRepository} from "../users/userReposetory";
 
 export const postRegistrationConfirmationValidator = body('code').custom(async (code) => {
-    console.log(code);
     const userId = await userRepository.findByCode(code);
-    console.log(userId);
     if(!userId) {throw new Error('incorrect code')}
     const userDetails = await userRepository.findRegistered(new ObjectId(userId));
+    console.log(code);
+    console.log(userDetails)
     if(userDetails?.isConfirmed) {throw new Error('already applied')}
     const isExpired = (userDetails?.confirmationCodeExpirationDate || '0') < new Date().toISOString();
     if(isExpired) {throw new Error('expired')}

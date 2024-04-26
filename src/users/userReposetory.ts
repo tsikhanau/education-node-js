@@ -75,9 +75,9 @@ export const userRepository = {
         return user?._id;
     },
     async markAsConfirmed(code: string): Promise<boolean> {
-        const userId = this.findByCode(code);
+        const userId = await this.findByCode(code);
         if(userId) {
-            const res = await userCollection.updateOne({_id: userId}, {$set: {isConfirmed: true}})
+            const res = await userCollection.updateOne({_id: new ObjectId(userId)}, {$set: {isConfirmed: true}})
             return true;
         }
         return false
